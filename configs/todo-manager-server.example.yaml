@@ -1,0 +1,11 @@
+http:
+  listen_host: localhost
+  listen_port: 8080
+  read_timeout: 6s
+  write_timeout: 6s
+  idle_timeout: 12s
+logging:
+  env: dev
+  level: debug
+  encoding: console
+  paths: [stdout]

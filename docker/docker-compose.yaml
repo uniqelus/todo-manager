@@ -1,0 +1,24 @@
+services:
+  todo-manager-server:
+    build:
+      context: ..
+      dockerfile: docker/todo-manager-server.dockerfile
+    ports:
+      - "${HTTP_LISTEN_PORT:-8080}:8080"
+    environment:
+      - HTTP_LISTEN_HOST=${HTTP_LISTEN_HOST:-}
+      - HTTP_LISTEN_PORT=${HTTP_LISTEN_PORT:-8080}
+      - HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT:-15s}
+      - HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT:-15s}
+      - HTTP_IDLE_TIMEOUT=${HTTP_IDLE_TIMEOUT:-60s}
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q --spider http://localhost:${HTTP_LISTEN_PORT:-8080}/health || exit 1",
+        ]
+      interval: ${HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: ${HEALTHCHECK_START_PERIOD:-10s}

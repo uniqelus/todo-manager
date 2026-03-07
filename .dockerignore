@@ -1,0 +1,12 @@
+.git
+.gitignore
+.dockerignore
+docker/*
+*.md
+LICENSE
+Makefile
+*_test.go
+.idea
+.vscode
+tmp/
+vendor/
