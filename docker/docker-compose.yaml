@@ -11,6 +11,19 @@ services:
       - HTTP_READ_TIMEOUT=${HTTP_READ_TIMEOUT:-15s}
       - HTTP_WRITE_TIMEOUT=${HTTP_WRITE_TIMEOUT:-15s}
       - HTTP_IDLE_TIMEOUT=${HTTP_IDLE_TIMEOUT:-60s}
+      - LOGGING_ENV=${LOGGING_ENV:-prod}
+      - LOGGING_LEVEL=${LOGGING_LEVEL:-info}
+      - LOGGING_ENCODING=${LOGGING_ENCODING:-json}
+      - LOGGING_PATHS=${LOGGING_PATHS:-stdout}
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-tododb}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_MAX_CONNS=${DB_MAX_CONNS:-25}
+      - DB_MIN_CONNS=${DB_MIN_CONNS:-5}
+      - DB_MAX_CONN_IDLE=${DB_MAX_CONN_IDLE:-30m}
+      - DB_MAX_CONN_LIFETIME=${DB_MAX_CONN_LIFETIME:-1h}
     restart: unless-stopped
     healthcheck:
       test:
@@ -37,26 +50,30 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable",
+        "postgres://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:5432/${DB_NAME:-tododb}?sslmode=disable",
         "up",
       ]
     depends_on:
       postgres:
         condition: service_healthy
     restart: "no"
+    environment:
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_NAME=${DB_NAME:-tododb}
 
   postgres:
     image: postgres:17-alpine
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+      - POSTGRES_DB=${DB_NAME:-tododb}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
