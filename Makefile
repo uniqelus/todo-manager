@@ -1,11 +1,12 @@
-.PHONY: lint build
+.PHONY: lint build migration up down start stop logs ps restart
 
 GOOS ?= linux
 GOARCH ?= amd64
 CGO_ENABLED ?= 0
 
 DOCKER_COMPOSE_FILE = docker/docker-compose.yaml
-DOCKER_COMPOSE = docker compose -f $(DOCKER_COMPOSE_FILE)
+DOCKER_COMPOSE_ENV_FILE = .env
+DOCKER_COMPOSE = docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(DOCKER_COMPOSE_ENV_FILE)
 
 build:
 	@mkdir -p bin
@@ -16,6 +17,9 @@ build:
 
 lint:
 	golangci-lint run --fix ./...
+
+migration:
+	migrate create -ext sql -dir schema/migrations -seq $(name)
 
 up: build
 	$(DOCKER_COMPOSE) up --build -d

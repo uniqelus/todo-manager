@@ -18,7 +18,50 @@ services:
           "CMD-SHELL",
           "wget -q --spider http://localhost:${HTTP_LISTEN_PORT:-8080}/health || exit 1",
         ]
-      interval: ${HEALTHCHECK_INTERVAL:-30s}
-      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
-      retries: ${HEALTHCHECK_RETRIES:-3}
-      start_period: ${HEALTHCHECK_START_PERIOD:-10s}
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    image: migrate/migrate:v4.18.1
+    volumes:
+      - ../schema/migrations:/migrations
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable",
+        "up",
+      ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
