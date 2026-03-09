@@ -18,6 +18,10 @@ build:
 lint:
 	golangci-lint run --fix ./...
 
+test:
+	mockery
+	go test ./...
+
 migration:
 	migrate create -ext sql -dir schema/migrations -seq $(name)
 
