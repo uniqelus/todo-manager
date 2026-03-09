@@ -4,12 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/uniqelus/todo-manager/internal/domain/server/task"
 )
 
 //go:generate mockery --name=Repository --output=mocks --filename=repository.go
 type Repository interface {
 	CreateTask(ctx context.Context, task *task.Task) error
+	GetTask(ctx context.Context, id uuid.UUID) (*task.Task, error)
 }
 
 type Service struct {
@@ -33,4 +36,8 @@ func (s *Service) CreateTask(ctx context.Context, options *task.CreateTaskOption
 	}
 
 	return task, nil
+}
+
+func (s *Service) GetTask(ctx context.Context, options *task.GetTaskOpotions) (*task.Task, error) {
+	return s.taskRepository.GetTask(ctx, options.ID)
 }

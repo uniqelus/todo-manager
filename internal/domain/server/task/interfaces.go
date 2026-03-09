@@ -3,6 +3,8 @@ package task
 import (
 	"context"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Creator interface {
@@ -14,4 +16,12 @@ type CreateTaskOptions struct {
 	Description string
 	Priority    string
 	DueDate     time.Time
+}
+
+type Getter interface {
+	GetTask(ctx context.Context, opts *GetTaskOpotions) (*Task, error)
+}
+
+type GetTaskOpotions struct {
+	ID uuid.UUID
 }
