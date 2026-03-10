@@ -7,7 +7,7 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 
-	task "github.com/uniqelus/todo-manager/internal/domain/server/task"
+	task "github.com/uniqelus/todo-manager/internal/domains/server/task"
 
 	uuid "github.com/google/uuid"
 )

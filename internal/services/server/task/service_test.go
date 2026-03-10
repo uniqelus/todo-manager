@@ -1,4 +1,4 @@
-package task_test
+package taskserv_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	taskdmn "github.com/uniqelus/todo-manager/internal/domain/server/task"
+	taskdmn "github.com/uniqelus/todo-manager/internal/domains/server/task"
 	tasksrv "github.com/uniqelus/todo-manager/internal/services/server/task"
 	"github.com/uniqelus/todo-manager/internal/services/server/task/mocks"
 )

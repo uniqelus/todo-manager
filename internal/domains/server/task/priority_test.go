@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/uniqelus/todo-manager/internal/domain/server/task"
+	"github.com/uniqelus/todo-manager/internal/domains/server/task"
 )
 
 func TestNewPriority(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/render"
 	"go.uber.org/zap"
 
-	"github.com/uniqelus/todo-manager/internal/domain/server/task"
+	"github.com/uniqelus/todo-manager/internal/domains/server/task"
 	"github.com/uniqelus/todo-manager/internal/handlers/http/helpers"
 )
 

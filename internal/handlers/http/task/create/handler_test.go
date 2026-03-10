@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/uniqelus/todo-manager/internal/domain/server/task"
+	"github.com/uniqelus/todo-manager/internal/domains/server/task"
 	"github.com/uniqelus/todo-manager/internal/handlers/http/helpers"
 	"github.com/uniqelus/todo-manager/internal/handlers/http/task/create"
 	"github.com/uniqelus/todo-manager/internal/handlers/http/task/create/mocks"

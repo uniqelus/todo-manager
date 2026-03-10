@@ -1,4 +1,4 @@
-package task
+package taskserv
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/uniqelus/todo-manager/internal/domain/server/task"
+	"github.com/uniqelus/todo-manager/internal/domains/server/task"
 )
 
 //go:generate mockery --name=Repository --output=mocks --filename=repository.go

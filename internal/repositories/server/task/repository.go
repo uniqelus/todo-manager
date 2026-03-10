@@ -1,4 +1,4 @@
-package task
+package taskrepo
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/uniqelus/todo-manager/internal/domain/server/task"
+	"github.com/uniqelus/todo-manager/internal/domains/server/task"
 )
 
 type Repository struct {
