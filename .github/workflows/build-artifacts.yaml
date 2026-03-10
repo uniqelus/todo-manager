@@ -1,0 +1,28 @@
+name: Build Artifacts
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [linux, windows, darwin]
+        arch: [amd64, arm64]
+    
+    steps:
+      - uses: actions/checkout@v4
+    
+      - uses: actions/setup-go@v5
+        with: { go-version: '1.25', cache: true }
+    
+      - run: GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o app-${{ matrix.os }}
+    
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.os }}-${{ matrix.arch }}
+          path: app-${{ matrix.os }}
