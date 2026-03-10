@@ -1,7 +1,7 @@
 name: Build Artifacts
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
@@ -15,14 +15,25 @@ jobs:
         arch: [amd64, arm64]
     
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup code
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: true
     
-      - uses: actions/setup-go@v5
-        with: { go-version: '1.25', cache: true }
-    
-      - run: GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o app-${{ matrix.os }}
-    
-      - uses: actions/upload-artifact@v4
+      - name: Build
+        run: |
+          BINARY_NAME="app-${{ matrix.os }}-${{ matrix.arch }}"
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            BINARY_NAME="$BINARY_NAME.exe"
+          fi
+          GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} go build -o "$BINARY_NAME" ./cmd/server
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: binary-${{ matrix.os }}-${{ matrix.arch }}
           path: app-${{ matrix.os }}

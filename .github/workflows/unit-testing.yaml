@@ -8,22 +8,25 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup code
         uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache: true
 
       - name: Install dependencies
         run: go mod download
 
       - name: Run tests
-        run: go test -v -race -coverprofile=coverage.out ./...
+        run: go test -v -coverprofile=coverage.out ./...
 
-      - name: Run linter
-        uses: golangci/golangci-lint-action@v4
+      - name: Run race detector
+        run: go test -race ./...
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3

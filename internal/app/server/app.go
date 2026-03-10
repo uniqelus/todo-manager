@@ -12,8 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	httproute "github.com/uniqelus/todo-manager/internal/handlers/http"
-	taskrepo "github.com/uniqelus/todo-manager/internal/repositories/server/task"
-	taskserv "github.com/uniqelus/todo-manager/internal/services/server/task"
 	httpserver "github.com/uniqelus/todo-manager/pkg/components/http/server"
 	"github.com/uniqelus/todo-manager/pkg/logging"
 )
@@ -42,10 +40,7 @@ func NewApp(cfg *Config) (*App, error) {
 		return nil, fmt.Errorf("cannot establish connection to database: %w", err)
 	}
 
-	taskRepository := taskrepo.NewRepository(db)
-	taskService := taskserv.NewService(taskRepository)
-
-	httpsServer := newHTTPServer(log, &cfg.HTTP, taskService)
+	httpsServer := newHTTPServer(log, &cfg.HTTP)
 
 	return &App{
 		cfg:        cfg,
@@ -58,7 +53,6 @@ func NewApp(cfg *Config) (*App, error) {
 func newHTTPServer(
 	log *zap.Logger,
 	cfg *HTTPConfig,
-	taskService *taskserv.Service,
 ) *httpserver.Component {
 	log.Info("setting http server",
 		zap.String("listen_host", cfg.ListenHost),
@@ -70,7 +64,7 @@ func newHTTPServer(
 
 	httpServerAddress := net.JoinHostPort(cfg.ListenHost, cfg.ListenPort)
 	httpServer := httpserver.NewComponent(httpServerAddress,
-		httpserver.WithHandler(httproute.NewRouter(log, taskService)),
+		httpserver.WithHandler(httproute.NewRouter(log, nil)),
 		httpserver.WithReadTimeout(cfg.ReadTimeout),
 		httpserver.WithWriteTimeout(cfg.WriteTimeout),
 		httpserver.WithIdleTimeout(cfg.IdleTimeout),
